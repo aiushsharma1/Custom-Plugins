@@ -1,0 +1,51 @@
+.myslider-wrapper {
+    margin: 20px auto;
+    max-width: 90%; /* Responsive width */
+    width: 800px;
+}
+.myslider-slide {
+    height: 80vh; /* Fixed height for the slider area */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0; /* Optional: background for non-filling images */
+}
+.myslider-slide img {
+    width: 100%;     /* Force full width */
+    height: 100%;    /* Force full height */
+    margin: 0 auto;
+    border-radius: 8px;
+    object-fit: cover; /* Cover the container, cropping if necessary */
+}
+
+/* Pagination Dots (Indexing Circles -> Dashes) */
+.myslider-wrapper {
+    margin-bottom: 4rem; /* Space for dots */
+}
+.slick-dots {
+    bottom: -4rem; /* Position exactly 4rem below */
+}
+.slick-dots li {
+    width: 30px; /* Width of the bar area */
+    height: 5px;
+    margin: 0 5px;
+}
+.slick-dots li button {
+    width: 30px;
+    height: 5px;
+    padding: 0;
+}
+.slick-dots li button:before {
+    content: ""; /* No text content */
+    width: 30px; /* Bar width */
+    height: 4px; /* Bar height */
+    background-color: #ccc;
+    opacity: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 2px; /* Slight rounding */
+}
+.slick-dots li.slick-active button:before {
+    background-color: #333; /* Active bar darker */
+}

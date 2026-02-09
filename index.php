@@ -73,122 +73,16 @@ function myslider_enqueue_scripts()
     wp_enqueue_style('slick-theme-css', 'https://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick-theme.css', array('slick-css'), '1.8.1');
 
     // Custom CSS for My Slider
-    wp_add_inline_style('slick-theme-css', '
-        .myslider-wrapper {
-            margin: 20px auto;
-            max-width: 90%; /* Responsive width */
-            width: 800px;
-        }
-        .myslider-slide {
-            height: 80vh; /* Fixed height for the slider area */
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
-            background: #f0f0f0; /* Optional: background for non-filling images */
-        }
-        .myslider-slide img {
-            width: 100%;     /* Force full width */
-            height: 100%;    /* Force full height */
-            margin: 0 auto;
-            border-radius: 8px;
-            object-fit: cover; /* Cover the container, cropping if necessary */
-        }
-        /* Colorful Buttons */
-        .slick-prev:before, .slick-next:before {
-            font-size: 50px; /* Bigger Icon */
-            opacity: 1;
-            line-height: 1;
-        }
-        .slick-prev:before {
-            content: "←";
-            color: #ff5722;
-        }
-        .slick-next:before {
-            content: "→";
-            color: #2196f3;
-        }
-        .slick-prev, .slick-next {
-            width: 60px;  /* Bigger Container */
-            height: 60px; /* Bigger Container */
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 100;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .slick-prev:hover, .slick-prev:focus, .slick-next:hover, .slick-next:focus {
-            background: #f9f9f9;
-        }
-        .slick-prev {
-            left: -80px; /* Move further out */
-        }
-        .slick-next {
-            right: -80px; /* Move further out */
-        }
-        
-        /* Mobile responsive arrows */
-        @media (max-width: 1000px) {
-            .slick-prev { left: 10px; }
-            .slick-next { right: 10px; }
-        }
-        
-        /* Pagination Dots (Indexing Circles -> Dashes) */
-        .myslider-wrapper {
-            margin-bottom: 4rem; /* Space for dots */
-        }
-        .slick-dots {
-            bottom: -4rem; /* Position exactly 4rem below */
-        }
-        .slick-dots li {
-            width: 30px; /* Width of the bar area */
-            height: 5px;
-            margin: 0 5px;
-        }
-        .slick-dots li button {
-            width: 30px;
-            height: 5px;
-            padding: 0;
-        }
-        .slick-dots li button:before {
-            content: ""; /* No text content */
-            width: 30px; /* Bar width */
-            height: 4px; /* Bar height */
-            background-color: #ccc;
-            opacity: 1;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 2px; /* Slight rounding */
-        }
-        .slick-dots li.slick-active button:before {
-            background-color: #333; /* Active bar darker */
-        }
-    ');
+    wp_enqueue_style('myslider-custom-css', plugin_dir_url(__FILE__) . 'assets/css/myslider.css', array('slick-theme-css'), '1.0');
 
     // Slick JS
     wp_enqueue_script('slick-js', 'https://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js', array('jquery'), '1.8.1', true);
 
-    // Initialize Slick
-    wp_add_inline_script('slick-js', '
-        jQuery(document).ready(function($) {
-            $(".myslider").slick({
-                dots: true,
-                infinite: true,
-                speed: 1000, /* 1s delay transition */
-                slidesToShow: 1,
-                autoplay: true, /* Auto sliding on */
-                autoplaySpeed: 3000,
-                arrows: false, /* Remove slider buttons */
-                fade: true, /* Optional: nice fade effect */
-                cssEase: "linear"
-            });
-        });
-    ');
+    // Custom JS for My Slider
+    wp_enqueue_script('myslider-custom-js', plugin_dir_url(__FILE__) . 'assets/js/myslider.js', array('slick-js'), '1.0', true);
 }
 add_action('wp_enqueue_scripts', 'myslider_enqueue_scripts');
 
-// 3. Shortcode [myslider]
 // 3. Shortcode [myslider]
 function myslider_shortcode($atts)
 {
@@ -254,6 +148,38 @@ function myslider_shortcode($atts)
     }
 }
 add_shortcode('myslider', 'myslider_shortcode');
+
+// 4. Activation Tutorial Notice
+function myslider_activate()
+{
+    set_transient('myslider_show_notice', true, 5);
+}
+register_activation_hook(__FILE__, 'myslider_activate');
+
+function myslider_admin_notice()
+{
+    if (get_transient('myslider_show_notice')) {
+        delete_transient('myslider_show_notice');
+?>
+        <div class="notice notice-info is-dismissible" style="border-left-color: #2196f3;">
+            <p><strong>🚀 Welcome to My Slider!</strong> Here is a quick guide to get you started:</p>
+            <ol>
+                <li><strong>Add Slides:</strong> Go to <a href="<?php echo admin_url('edit.php?post_type=myslider_slide'); ?>">My Slider > Add New</a> to upload featured images for your slides.</li>
+                <li><strong>Shortcode:</strong> Use <code>[myslider]</code> on any page or post.</li>
+                <li><strong>Source Options:</strong> 
+                    <ul>
+                        <li><code>[myslider source="media_library"]</code> - Shows random images from your Media Library (Default).</li>
+                        <li><code>[myslider source="custom"]</code> - Shows only the slides you added in the "My Slider" menu.</li>
+                    </ul>
+                </li>
+                <li><strong>Interactive:</strong> The slider pauses automatically when you interact with it (swipe/dots).</li>
+            </ol>
+            <p>Need help? Just start adding slides!</p>
+        </div>
+        <?php
+    }
+}
+add_action('admin_notices', 'myslider_admin_notice');
 
 // Documentation (Comment at the end)
 /*

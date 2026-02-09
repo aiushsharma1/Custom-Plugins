@@ -133,7 +133,7 @@ function myslider_enqueue_scripts()
             .slick-next { right: 10px; }
         }
         
-        /* Pagination Dots (Indexing Circles) */
+        /* Pagination Dots (Indexing Circles -> Dashes) */
         .myslider-wrapper {
             margin-bottom: 4rem; /* Space for dots */
         }
@@ -141,16 +141,28 @@ function myslider_enqueue_scripts()
             bottom: -4rem; /* Position exactly 4rem below */
         }
         .slick-dots li {
-            margin: 0 4px;
+            width: 30px; /* Width of the bar area */
+            height: 5px;
+            margin: 0 5px;
+        }
+        .slick-dots li button {
+            width: 30px;
+            height: 5px;
+            padding: 0;
         }
         .slick-dots li button:before {
-            font-size: 14px; /* Visible circles */
-            color: #ccc;
+            content: ""; /* No text content */
+            width: 30px; /* Bar width */
+            height: 4px; /* Bar height */
+            background-color: #ccc;
             opacity: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 2px; /* Slight rounding */
         }
         .slick-dots li.slick-active button:before {
-            color: #333; /* Active circle darker */
-            font-size: 16px;
+            background-color: #333; /* Active bar darker */
         }
     ');
 
@@ -165,9 +177,9 @@ function myslider_enqueue_scripts()
                 infinite: true,
                 speed: 1000, /* 1s delay transition */
                 slidesToShow: 1,
-                autoplay: false,
+                autoplay: true, /* Auto sliding on */
                 autoplaySpeed: 3000,
-                arrows: true,
+                arrows: false, /* Remove slider buttons */
                 fade: true, /* Optional: nice fade effect */
                 cssEase: "linear"
             });
